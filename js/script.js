@@ -217,26 +217,38 @@ function escapeHtml(str) {
     return div.innerHTML;
 }
 
-// ============= GITHUB API INTEGRATION =============
-async function fetchGitHubRepos() {
+
+// ============= GITHUB API INTEGRATION with Retry & Fallback =============
+async function fetchGitHubRepos(retryCount = 0) {
     const container = document.getElementById('github-repos');
     if (!container) return;
 
+    const GITHUB_USERNAME = 'Hassan61-kfupm';
+    const MAX_RETRIES = 2;
+
     try {
-        // Using my GitHub username - replace with your actual GitHub username
-        const response = await fetch('https://api.github.com/users/Hassan61-kfupm/repos?per_page=6');
+        container.innerHTML = '<div class="loading">Loading GitHub repositories...</div>';
+
+        const response = await fetch(`https://api.github.com/users/${GITHUB_USERNAME}/repos?per_page=6&sort=updated`);
+
+        if (response.status === 403 && retryCount < MAX_RETRIES) {
+            // Rate limit - wait and retry
+            container.innerHTML = `<div class="loading">Rate limit hit, retrying (${retryCount + 1}/${MAX_RETRIES})...</div>`;
+            setTimeout(() => fetchGitHubRepos(retryCount + 1), 2000);
+            return;
+        }
 
         if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
+            throw new Error(`HTTP ${response.status}`);
         }
 
         const repos = await response.json();
 
-        if (repos.length === 0) {
-            container.innerHTML = '<div class="error-message">No public repositories found.</div>';
-            return;
+        if (!repos || repos.length === 0) {
+            throw new Error('No repositories found');
         }
 
+        // Success - show real GitHub repos
         container.innerHTML = repos.map(repo => `
             <div class="github-card">
                 <h3>${escapeHtml(repo.name)}</h3>
@@ -245,19 +257,101 @@ async function fetchGitHubRepos() {
                     <span>⭐ ${repo.stargazers_count}</span>
                     <span>🍴 ${repo.forks_count}</span>
                     <span>📝 ${repo.language || 'N/A'}</span>
+                    <span>🔄 Updated: ${new Date(repo.updated_at).toLocaleDateString()}</span>
                 </div>
                 <a href="${repo.html_url}" target="_blank" rel="noopener noreferrer" class="github-link">View Repository →</a>
             </div>
         `).join('');
 
-        showToast('GitHub repositories loaded successfully!', 'success');
+        showToast(`${repos.length} GitHub repositories loaded!`, 'success');
+
     } catch (error) {
-        console.error('Error fetching GitHub repos:', error);
-        container.innerHTML = '<div class="error-message">Unable to load GitHub repositories. Please try again later.</div>';
-        showToast('Failed to load GitHub repositories', 'error');
+        console.log('GitHub API failed:', error.message);
+
+        if (retryCount < MAX_RETRIES) {
+            // Retry on other errors
+            container.innerHTML = `<div class="loading">Retrying (${retryCount + 1}/${MAX_RETRIES})...</div>`;
+            setTimeout(() => fetchGitHubRepos(retryCount + 1), 1500);
+        } else {
+            // All retries failed - use demo data
+            loadDemoRepos(container);
+        }
     }
 }
 
+function loadDemoRepos(container) {
+    const demoRepos = [
+        {
+            name: "🌟 Portfolio Website",
+            description: "Modern portfolio with dark mode, API integration, and advanced features",
+            stargazers_count: 15,
+            forks_count: 4,
+            language: "JavaScript",
+            html_url: "#",
+            updated_at: new Date().toISOString()
+        },
+        {
+            name: "✅ Task Manager Pro",
+            description: "Full-stack task management app with React and Node.js",
+            stargazers_count: 23,
+            forks_count: 7,
+            language: "React",
+            html_url: "#",
+            updated_at: new Date().toISOString()
+        },
+        {
+            name: "🌤️ Weather Dashboard",
+            description: "Real-time weather app using OpenWeatherMap API",
+            stargazers_count: 31,
+            forks_count: 9,
+            language: "JavaScript",
+            html_url: "#",
+            updated_at: new Date().toISOString()
+        },
+        {
+            name: "🛒 E-Commerce Backend",
+            description: "RESTful API for e-commerce platform with JWT authentication",
+            stargazers_count: 12,
+            forks_count: 3,
+            language: "Node.js",
+            html_url: "#",
+            updated_at: new Date().toISOString()
+        },
+        {
+            name: "🎨 AI Image Generator",
+            description: "Generate images using DALL-E API integration",
+            stargazers_count: 47,
+            forks_count: 11,
+            language: "Python",
+            html_url: "#",
+            updated_at: new Date().toISOString()
+        },
+        {
+            name: "💬 Chat Application",
+            description: "Real-time chat with WebSocket and room management",
+            stargazers_count: 28,
+            forks_count: 6,
+            language: "Socket.io",
+            html_url: "#",
+            updated_at: new Date().toISOString()
+        }
+    ];
+
+    container.innerHTML = demoRepos.map(repo => `
+        <div class="github-card">
+            <h3>${escapeHtml(repo.name)}</h3>
+            <p>${escapeHtml(repo.description)}</p>
+            <div class="github-stats">
+                <span>⭐ ${repo.stargazers_count}</span>
+                <span>🍴 ${repo.forks_count}</span>
+                <span>📝 ${repo.language}</span>
+            </div>
+            <a href="${repo.html_url}" class="github-link">📁 Demo Project</a>
+        </div>
+    `).join('');
+
+    showToast('Showing demo projects (GitHub API temporarily unavailable)', 'info');
+}
 // ============= CONTACT FORM HANDLING =============
 function initContactForm() {
     const form = document.getElementById('contact-form');
