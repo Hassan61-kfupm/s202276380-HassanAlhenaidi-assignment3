@@ -224,7 +224,7 @@ async function fetchGitHubRepos() {
 
     try {
         // Using my GitHub username - replace with your actual GitHub username
-        const response = await fetch('https://api.github.com/users/octocat/repos?per_page=6');
+        const response = await fetch('https://api.github.com/users/Hassan61-kfupm/repos?per_page=6');
 
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
