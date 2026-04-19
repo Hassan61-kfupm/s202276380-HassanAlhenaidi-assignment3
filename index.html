@@ -1,85 +1,178 @@
+<!-- index.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Portfolio</title>
+    <title>Hassan Al Henaidi | Developer Portfolio</title>
     <link rel="stylesheet" href="css/styles.css">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
-    <header>
-        <nav>
-            <div class="logo">Hassan Al Henaidi</div>
-            <button class="hamburger" id="hamburger">☰</button>
-            <ul class="nav-links" id="nav-links">
-                <li><a href="#about">About</a></li>
-                <li><a href="#projects">Projects</a></li>
-                <li><a href="#contact">Contact</a></li>
-            </ul>
-        </nav>
-    </header>
+<header>
+    <nav>
+        <div class="logo">Hassan Al Henaidi</div>
+        <button class="hamburger" id="hamburger">☰</button>
+        <ul class="nav-links" id="nav-links">
+            <li><a href="#about">About</a></li>
+            <li><a href="#projects">Projects</a></li>
+            <li><a href="#contact">Contact</a></li>
+        </ul>
+    </nav>
+</header>
 
-    <main>
-        <section id="about">
-            <div class="container">
-                <h1>About Me</h1>
-                <div class="about-content">
-                    <div class="profile-image">
-                        <img src="assets/profile.jpeg" alt="Profile">
-                    </div>
-                    <div class="about-text">
-                        <p class="tagline">Building creative web solutions</p>
-                        <p>I'm a web developer passionate about creating clean and responsive websites. Currently learning front-end development and building projects to improve my skills.</p>
+<main>
+    <!-- Visitor Timer Section -->
+    <div class="timer-container">
+        <div class="timer-card">
+            <i class="fas fa-clock"></i>
+            <span>Session Time: </span>
+            <span id="session-timer">00:00:00</span>
+        </div>
+    </div>
+
+    <section id="about">
+        <div class="container">
+            <h1>About Me</h1>
+            <div class="about-content">
+                <div class="profile-image">
+                    <img src="assets/profile.jpeg" alt="Profile" loading="lazy">
+                </div>
+                <div class="about-text">
+                    <p class="tagline">Building creative web solutions</p>
+                    <p>I'm a web developer passionate about creating clean and responsive websites. Currently learning front-end development and building projects to improve my skills.</p>
+
+                    <!-- Skill Level Selector - Complex Logic -->
+                    <div class="skill-selector">
+                        <label>Experience Level:</label>
+                        <div class="level-buttons">
+                            <button class="level-btn" data-level="beginner">🌱 Beginner</button>
+                            <button class="level-btn active" data-level="intermediate">📚 Intermediate</button>
+                            <button class="level-btn" data-level="advanced">🚀 Advanced</button>
+                        </div>
+                        <p id="skill-message" class="skill-message"></p>
                     </div>
                 </div>
             </div>
-        </section>
+        </div>
+    </section>
 
-        <section id="projects">
-            <div class="container">
-                <h2>My Projects</h2>
-                <div class="projects-grid">
-                    <div class="project-card">
-                        <img src="assets/project1.jpg" alt="Project 1">
-                        <h3>LabTrack</h3>
-                        <p>A simple programming lab organization platform</p>
-                    </div>
-                    <div class="project-card">
-                        <img src="assets/project2.jpg" alt="Project 2">
-                        <h3>Todo List</h3>
-                        <p>Task management app with add, delete, and mark complete features.</p>
+    <!-- GitHub Repositories Section - API Integration -->
+    <section id="github-repos">
+        <div class="container">
+            <h2><i class="fab fa-github"></i> GitHub Projects</h2>
+            <div id="github-loading" class="loading-spinner" style="display: none;">
+                <i class="fas fa-spinner fa-spin"></i> Loading repositories...
+            </div>
+            <div id="github-error" class="error-message" style="display: none;"></div>
+            <div id="github-repos-grid" class="projects-grid"></div>
+        </div>
+    </section>
+
+    <section id="projects">
+        <div class="container">
+            <h2>Featured Projects</h2>
+
+            <!-- Filter and Sort Controls - Complex Logic -->
+            <div class="filter-sort-container">
+                <div class="filter-group">
+                    <label>Filter by Category:</label>
+                    <div class="filter-buttons">
+                        <button class="filter-btn active" data-filter="all">All</button>
+                        <button class="filter-btn" data-filter="web">Web Dev</button>
+                        <button class="filter-btn" data-filter="app">App Dev</button>
+                        <button class="filter-btn" data-filter="design">Design</button>
                     </div>
                 </div>
+                <div class="sort-group">
+                    <label>Sort by:</label>
+                    <select id="sort-projects">
+                        <option value="default">Default</option>
+                        <option value="name-asc">Name (A-Z)</option>
+                        <option value="name-desc">Name (Z-A)</option>
+                    </select>
+                </div>
             </div>
-        </section>
 
-        <section id="contact">
-            <div class="container">
-                <h2>Contact Me</h2>
-                <form id="contact-form">
-                    <div class="form-group">
-                        <label for="name">Name</label>
-                        <input type="text" id="name" name="name" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="email">Email</label>
-                        <input type="email" id="email" name="email" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="message">Message</label>
-                        <textarea id="message" name="message" rows="4" required></textarea>
-                    </div>
-                    <button type="submit">Send Message</button>
-                </form>
-                <div id="form-message"></div>
+            <div class="search-container">
+                <input type="text" id="project-search" placeholder="🔍 Search projects by title or description...">
             </div>
-        </section>
-    </main>
 
-    <footer>
-        <p>&copy; 2026 Hassan Al Henaidi. All rights reserved.</p>
-    </footer>
+            <div class="projects-grid" id="featured-projects-grid">
+                <div class="project-card" data-category="web">
+                    <img src="assets/project1.jpg" alt="LabTrack" loading="lazy">
+                    <h3>LabTrack</h3>
+                    <p>A simple programming lab organization platform</p>
+                    <span class="project-category">Web Dev</span>
+                </div>
+                <div class="project-card" data-category="app">
+                    <img src="assets/project2.jpg" alt="Todo List" loading="lazy">
+                    <h3>Todo List</h3>
+                    <p>Task management app with add, delete, and mark complete features.</p>
+                    <span class="project-category">App Dev</span>
+                </div>
+                <div class="project-card" data-category="web">
+                    <img src="assets/project3.jpg" alt="Portfolio Website" loading="lazy">
+                    <h3>Portfolio Website</h3>
+                    <p>Responsive personal portfolio with modern design.</p>
+                    <span class="project-category">Web Dev</span>
+                </div>
+                <div class="project-card" data-category="design">
+                    <img src="assets/project4.jpg" alt="UI Kit" loading="lazy">
+                    <h3>UI Component Kit</h3>
+                    <p>Reusable UI components for rapid development.</p>
+                    <span class="project-category">Design</span>
+                </div>
+            </div>
+            <div id="no-results" class="no-results" style="display: none;">No projects found matching your search.</div>
+        </div>
+    </section>
 
-    <script src="js/script.js"></script>
+    <!-- Inspirational Quotes API Section -->
+    <section id="quotes">
+        <div class="container">
+            <div class="quote-container">
+                <i class="fas fa-quote-left"></i>
+                <p id="quote-text" class="quote-text">Loading inspirational quote...</p>
+                <p id="quote-author" class="quote-author"></p>
+                <button id="refresh-quote" class="quote-btn">
+                    <i class="fas fa-sync-alt"></i> New Quote
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <section id="contact">
+        <div class="container">
+            <h2>Contact Me</h2>
+            <form id="contact-form">
+                <div class="form-group">
+                    <label for="name">Name</label>
+                    <input type="text" id="name" name="name" required>
+                    <small class="error-text" id="name-error"></small>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" required>
+                    <small class="error-text" id="email-error"></small>
+                </div>
+                <div class="form-group">
+                    <label for="message">Message</label>
+                    <textarea id="message" name="message" rows="4" required></textarea>
+                    <small class="error-text" id="message-error"></small>
+                </div>
+                <button type="submit">Send Message</button>
+            </form>
+            <div id="form-message"></div>
+        </div>
+    </section>
+</main>
+
+<footer>
+    <p>&copy; 2026 Hassan Al Henaidi. All rights reserved.</p>
+</footer>
+
+<script src="js/script.js"></script>
 </body>
 </html>
